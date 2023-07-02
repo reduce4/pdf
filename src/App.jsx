@@ -1,11 +1,11 @@
 import Dsl from "./dsl/dsl";
 import Pdf from "./pages/Pdf";
 
-const App = () => {
+const App = (props) => {
   return (
     <>
       <Dsl>
-        <Pdf />
+        <Pdf {...props} />
       </Dsl>
     </>
   );
