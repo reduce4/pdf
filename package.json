@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@micro-web/sub": "^0.2.3",
     "@ant-design/icons": "^5.0.1",
+    "@micro-web/sub": "^0.2.3",
     "antd": "^5.4.7",
+    "promise-worker": "^2.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

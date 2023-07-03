@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
-import { mupdf } from "../worker/mupdf-async";
+import MuBackend from "../oo/MuBackend";
 
-async function openURL(url, progressive, prefetch) {
-  try {
-    let headResponse = await fetch(url, { method: "HEAD" });
-    if (!headResponse.ok) throw new Error("Could not fetch document.");
-    let acceptRanges = headResponse.headers.get("Accept-Ranges");
-    let contentLength = headResponse.headers.get("Content-Length");
-    let contentType = headResponse.headers.get("Content-Type");
-    console.log("HEAD", url);
-    console.log("Content-Length", contentLength);
-    console.log("Content-Type", contentType);
-    let bodyResponse = await fetch(url);
-    let buffer = await bodyResponse.arrayBuffer();
-    let doc = await mupdf.openDocumentFromBuffer(buffer, contentType);
-    console.log("doc", doc);
-  } catch (error) {
-    console.log("errror", error);
-    // showDocumentError("openURL", error);
-    //antd error
-  }
-}
+const doc = new MuBackend();
+const useMuPdf = ({ url }) => {
+  const [loading, setLoading] = useState(true);
+  const [docInfo, setDocInfo] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [renderedSvg, setRenderedSvg] = useState(null);
 
-const useMuPdf = () => {
   useEffect(() => {
-    openURL("/b.pdf");
+    const fdata = async () => {
+      await doc._init(url);
+      setLoading(false);
+      const pageInfo = await doc.pageInfo;
+      setDocInfo(pageInfo);
+    };
+    fdata();
   }, []);
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    const fdata = async () => {
+      const svg = await doc.render.renderSVG(currentPage);
+      setRenderedSvg(svg);
+    };
+    fdata();
+  }, [currentPage, loading]);
+  return {
+    loading,
+    docInfo,
+    currentPage,
+    setCurrentPage,
+    renderedSvg,
+  };
 };
 export default useMuPdf;
