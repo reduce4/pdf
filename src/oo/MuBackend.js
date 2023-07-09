@@ -28,6 +28,9 @@ class MuWrapper {
     mu_drawPageAsSvg = (pageNo, textAsText) => {
         return this.mu_worker.postMessage(["drawPageAsSVG", [pageNo, textAsText]])
     }
+    mu_pageText = (pageNo) => {
+        return this.mu_worker.postMessage(["pageText", [pageNo]])
+    }
 }
 
 
@@ -65,7 +68,8 @@ class MuBackend extends MuWrapper {
     }
     async _initRender() {
         this.render = {
-            renderSVG: async (pageNo) => await this.mu_drawPageAsSvg(pageNo, 0)
+            renderSVG: async (pageNo) => await this.mu_drawPageAsSvg(pageNo, 0),
+            renderText: async (pageNo) => await this.mu_pageText(pageNo)
         }
     }
     async _initInteract() {

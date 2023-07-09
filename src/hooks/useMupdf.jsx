@@ -24,6 +24,8 @@ const useMuPdf = ({ url }) => {
     const fdata = async () => {
       const svg = await doc.render.renderSVG(currentPage);
       setRenderedSvg(svg);
+      const text = await doc.render.renderText(currentPage);
+      console.log("text", text);
     };
     fdata();
   }, [currentPage, loading]);

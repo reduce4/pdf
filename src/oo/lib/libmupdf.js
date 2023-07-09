@@ -14,7 +14,7 @@ Module["ready"] = new Promise((resolve, reject) => {
  readyPromiseReject = reject;
 });
 
-[ "_malloc", "_free", "___original_main", "_openDocumentFromBuffer", "_countPages", "_drawPageAsSVG", "_pageWidth", "_pageHeight", "_documentTitle", "_loadOutline", "_fflush", "onRuntimeInitialized" ].forEach(prop => {
+[ "_malloc", "_free", "___original_main", "_openDocumentFromBuffer", "_countPages", "_pageText", "_drawPageAsSVG", "_pageWidth", "_pageHeight", "_documentTitle", "_loadOutline", "_fflush", "onRuntimeInitialized" ].forEach(prop => {
  if (!Object.getOwnPropertyDescriptor(Module["ready"], prop)) {
   Object.defineProperty(Module["ready"], prop, {
    get: () => abort("You are getting " + prop + " on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js"),
@@ -669,13 +669,13 @@ function unexportedRuntimeSymbol(sym) {
 }
 
 var ASM_CONSTS = {
- 2083800: () => {
+ 2083944: () => {
   throw new Error("Cannot create MuPDF context!");
  },
- 2083853: () => {
+ 2083997: () => {
   throw "trylater";
  },
- 2083875: $0 => {
+ 2084019: $0 => {
   throw new Error(UTF8ToString($0));
  }
 };
@@ -4371,6 +4371,8 @@ var _free = Module["_free"] = createExportWrapper("free");
 
 var _countPages = Module["_countPages"] = createExportWrapper("countPages");
 
+var _pageText = Module["_pageText"] = createExportWrapper("pageText");
+
 var _drawPageAsSVG = Module["_drawPageAsSVG"] = createExportWrapper("drawPageAsSVG");
 
 var _pageWidth = Module["_pageWidth"] = createExportWrapper("pageWidth");
@@ -4497,6 +4499,17 @@ function invoke_vi(index, a1) {
  var sp = stackSave();
  try {
   getWasmTableEntry(index)(a1);
+ } catch (e) {
+  stackRestore(sp);
+  if (e !== e + 0) throw e;
+  _setThrew(1, 0);
+ }
+}
+
+function invoke_viiif(index, a1, a2, a3, a4) {
+ var sp = stackSave();
+ try {
+  getWasmTableEntry(index)(a1, a2, a3, a4);
  } catch (e) {
   stackRestore(sp);
   if (e !== e + 0) throw e;
@@ -4871,17 +4884,6 @@ function invoke_viiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
  var sp = stackSave();
  try {
   getWasmTableEntry(index)(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
- } catch (e) {
-  stackRestore(sp);
-  if (e !== e + 0) throw e;
-  _setThrew(1, 0);
- }
-}
-
-function invoke_viiif(index, a1, a2, a3, a4) {
- var sp = stackSave();
- try {
-  getWasmTableEntry(index)(a1, a2, a3, a4);
  } catch (e) {
   stackRestore(sp);
   if (e !== e + 0) throw e;

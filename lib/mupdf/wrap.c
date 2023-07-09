@@ -90,6 +90,51 @@ static void loadPage(int number)
 }
 
 EMSCRIPTEN_KEEPALIVE
+char *pageText(int number)
+{
+	static unsigned char *data = NULL;
+	fz_stext_page *text = NULL;
+	fz_buffer *buf = NULL;
+	fz_output *out = NULL;
+
+	fz_var(buf);
+	fz_var(out);
+	fz_var(text);
+
+	fz_stext_options opts = {FZ_STEXT_PRESERVE_SPANS};
+
+	fz_free(ctx, data);
+	data = NULL;
+
+	fz_try(ctx)
+	{
+		loadPage(number);
+
+		buf = fz_new_buffer(ctx, 0);
+		out = fz_new_output_with_buffer(ctx, buf);
+		text = fz_new_stext_page_from_page(ctx, lastPage, &opts);
+
+		fz_print_stext_page_as_json(ctx, out, text, dpi / 72);
+		fz_close_output(ctx, out);
+		fz_terminate_buffer(ctx, buf);
+
+		fz_buffer_extract(ctx, buf, &data);
+	}
+	fz_always(ctx)
+	{
+		fz_drop_stext_page(ctx, text);
+		fz_drop_output(ctx, out);
+		fz_drop_buffer(ctx, buf);
+	}
+	fz_catch(ctx)
+	{
+		wasm_rethrow(ctx);
+	}
+
+	return (char *)data;
+}
+
+EMSCRIPTEN_KEEPALIVE
 char *drawPageAsSVG(int number, int style)
 {
 	static unsigned char *data = NULL;
@@ -180,24 +225,30 @@ char *documentTitle()
 }
 
 void outlineToJSON(fz_buffer *buf, fz_outline *outline);
-void outlineToJSONArray(fz_buffer *buf, fz_outline *outline){
+void outlineToJSONArray(fz_buffer *buf, fz_outline *outline)
+{
 	fz_append_printf(ctx, buf, "[");
 	outlineToJSON(buf, outline);
 	fz_append_printf(ctx, buf, "]");
 }
-void outlineToJSON(fz_buffer *buf, fz_outline *outline){
+void outlineToJSON(fz_buffer *buf, fz_outline *outline)
+{
 	fz_append_printf(ctx, buf, "{\"title\":\"%s\"", outline->title);
 	fz_append_printf(ctx, buf, ",\"page\":%d", outline->page.page);
 	fz_append_printf(ctx, buf, ",\"x\":%f", outline->x);
 	fz_append_printf(ctx, buf, ",\"y\":%f", outline->y);
-	if(outline->down) {
+	if (outline->down)
+	{
 		fz_append_printf(ctx, buf, ",\"children\":");
 		outlineToJSONArray(buf, outline->down);
 	}
-	if(outline->next) {
+	if (outline->next)
+	{
 		fz_append_printf(ctx, buf, "},");
 		outlineToJSON(buf, outline->next);
-	}else{
+	}
+	else
+	{
 		fz_append_printf(ctx, buf, "}");
 	}
 }
@@ -220,5 +271,5 @@ char *loadOutline()
 
 	fz_drop_outline(ctx, outline);
 	fz_drop_buffer(ctx, buf);
-	return (char*)data;
+	return (char *)data;
 }
