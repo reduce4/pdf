@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "install:emcc": "cd lib/emcc && ./emccInstall.sh",
+    "build:mupdf": "cd lib/mupdf && ./build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
