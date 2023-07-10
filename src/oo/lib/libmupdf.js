@@ -14,7 +14,7 @@ Module["ready"] = new Promise((resolve, reject) => {
  readyPromiseReject = reject;
 });
 
-[ "_malloc", "_free", "___original_main", "_openDocumentFromBuffer", "_countPages", "_pageText", "_drawPageAsSVG", "_pageWidth", "_pageHeight", "_documentTitle", "_loadOutline", "_fflush", "onRuntimeInitialized" ].forEach(prop => {
+[ "_malloc", "_free", "___original_main", "_openDocumentFromBuffer", "_countPages", "_pageText", "_drawPageAsSVG", "_pageWidthDpi", "_pageWidth", "_pageHeightDpi", "_pageHeight", "_documentTitle", "_loadOutline", "_fflush", "onRuntimeInitialized" ].forEach(prop => {
  if (!Object.getOwnPropertyDescriptor(Module["ready"], prop)) {
   Object.defineProperty(Module["ready"], prop, {
    get: () => abort("You are getting " + prop + " on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js"),
@@ -4375,7 +4375,11 @@ var _pageText = Module["_pageText"] = createExportWrapper("pageText");
 
 var _drawPageAsSVG = Module["_drawPageAsSVG"] = createExportWrapper("drawPageAsSVG");
 
+var _pageWidthDpi = Module["_pageWidthDpi"] = createExportWrapper("pageWidthDpi");
+
 var _pageWidth = Module["_pageWidth"] = createExportWrapper("pageWidth");
+
+var _pageHeightDpi = Module["_pageHeightDpi"] = createExportWrapper("pageHeightDpi");
 
 var _pageHeight = Module["_pageHeight"] = createExportWrapper("pageHeight");
 
@@ -4517,7 +4521,29 @@ function invoke_viiif(index, a1, a2, a3, a4) {
  }
 }
 
+function invoke_viif(index, a1, a2, a3) {
+ var sp = stackSave();
+ try {
+  getWasmTableEntry(index)(a1, a2, a3);
+ } catch (e) {
+  stackRestore(sp);
+  if (e !== e + 0) throw e;
+  _setThrew(1, 0);
+ }
+}
+
 function invoke_viii(index, a1, a2, a3) {
+ var sp = stackSave();
+ try {
+  getWasmTableEntry(index)(a1, a2, a3);
+ } catch (e) {
+  stackRestore(sp);
+  if (e !== e + 0) throw e;
+  _setThrew(1, 0);
+ }
+}
+
+function invoke_viff(index, a1, a2, a3) {
  var sp = stackSave();
  try {
   getWasmTableEntry(index)(a1, a2, a3);
@@ -4686,28 +4712,6 @@ function invoke_iiiiiffii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
  var sp = stackSave();
  try {
   return getWasmTableEntry(index)(a1, a2, a3, a4, a5, a6, a7, a8);
- } catch (e) {
-  stackRestore(sp);
-  if (e !== e + 0) throw e;
-  _setThrew(1, 0);
- }
-}
-
-function invoke_viff(index, a1, a2, a3) {
- var sp = stackSave();
- try {
-  getWasmTableEntry(index)(a1, a2, a3);
- } catch (e) {
-  stackRestore(sp);
-  if (e !== e + 0) throw e;
-  _setThrew(1, 0);
- }
-}
-
-function invoke_viif(index, a1, a2, a3) {
- var sp = stackSave();
- try {
-  getWasmTableEntry(index)(a1, a2, a3);
  } catch (e) {
   stackRestore(sp);
   if (e !== e + 0) throw e;

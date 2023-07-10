@@ -26,9 +26,11 @@ const muModuleFunctions = muModulePromise.then(muModule => {
         ["documentTitle", muModule.cwrap("documentTitle", "string", [])],
         ["countPages", muModule.cwrap("countPages", "number", [])],
         ["pageWidth", muModule.cwrap("pageWidth", "number", ["number"])],
+        ["pageWidthDpi", muModule.cwrap("pageWidthDpi", "number", ["number", "number"])],
         ["pageHeight", muModule.cwrap("pageHeight", "number", ["number"])],
+        ["pageHeightDpi", muModule.cwrap("pageHeightDpi", "number", ["number", "number"])],
         ["loadOutline", muModule.cwrap("loadOutline", "string", [])],
-        ["pageText", muModule.cwrap("pageText", "string", ["number"])],
+        ["pageText", muModule.cwrap("pageText", "string", ["number", "number"])],
     ]);
 })
 

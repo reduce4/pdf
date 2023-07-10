@@ -19,8 +19,14 @@ class MuWrapper {
     mu_pageWidth = (pageNo) => {
         return this.mu_worker.postMessage(["pageWidth", [pageNo]])
     }
+    mu_pageWidthDpi = (pageNo, dpi) => {
+        return this.mu_worker.postMessage(["pageWidthDpi", [pageNo, dpi]])
+    }
     mu_pageHeight = (pageNo) => {
         return this.mu_worker.postMessage(["pageHeight", [pageNo]])
+    }
+    mu_pageHeightDpi = (pageNo, dpi) => {
+        return this.mu_worker.postMessage(["pageHeightDpi", [pageNo, dpi]])
     }
     mu_outline = () => {
         return this.mu_worker.postMessage(["loadOutline", []])
@@ -28,8 +34,8 @@ class MuWrapper {
     mu_drawPageAsSvg = (pageNo, textAsText) => {
         return this.mu_worker.postMessage(["drawPageAsSVG", [pageNo, textAsText]])
     }
-    mu_pageText = (pageNo) => {
-        return this.mu_worker.postMessage(["pageText", [pageNo]])
+    mu_pageText = (pageNo, dpi) => {
+        return this.mu_worker.postMessage(["pageText", [pageNo, dpi]])
     }
 }
 
@@ -69,7 +75,7 @@ class MuBackend extends MuWrapper {
     async _initRender() {
         this.render = {
             renderSVG: async (pageNo) => await this.mu_drawPageAsSvg(pageNo, 0),
-            renderText: async (pageNo) => await this.mu_pageText(pageNo)
+            renderText: async (pageNo, dpi) => await this.mu_pageText(pageNo, dpi)
         }
     }
     async _initInteract() {

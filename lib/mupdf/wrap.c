@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 
-const float dpi = 72;
+const float dpi = 96;
 
 static fz_context *ctx;
 static fz_document *doc;
@@ -90,7 +90,7 @@ static void loadPage(int number)
 }
 
 EMSCRIPTEN_KEEPALIVE
-char *pageText(int number)
+char *pageText(int number, float dpi)
 {
 	static unsigned char *data = NULL;
 	fz_stext_page *text = NULL;
@@ -182,8 +182,35 @@ static fz_irect pageBounds(int number)
 	return bbox;
 }
 
+static fz_irect pageBoundsDpi(int number, float dpi)
+{
+	fz_irect bbox = fz_empty_irect;
+	fz_try(ctx)
+	{
+		loadPage(number);
+		bbox = fz_round_rect(fz_transform_rect(fz_bound_page(ctx, lastPage), fz_scale(dpi / 72, dpi / 72)));
+	}
+	fz_catch(ctx)
+		wasm_rethrow(ctx);
+	return bbox;
+}
+
 EMSCRIPTEN_KEEPALIVE
-int pageWidth(int number)
+int pageWidthDpi(int number, float dpi)
+{
+	fz_irect bbox = fz_empty_irect;
+	fz_try(ctx)
+	{
+		loadPage(number);
+		bbox = pageBoundsDpi(number, dpi);
+	}
+	fz_catch(ctx)
+		wasm_rethrow(ctx);
+	return bbox.x1 - bbox.x0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int pageWidth(int number, float dpi)
 {
 	fz_irect bbox = fz_empty_irect;
 	fz_try(ctx)
@@ -194,6 +221,20 @@ int pageWidth(int number)
 	fz_catch(ctx)
 		wasm_rethrow(ctx);
 	return bbox.x1 - bbox.x0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int pageHeightDpi(int number, float dpi)
+{
+	fz_irect bbox = fz_empty_irect;
+	fz_try(ctx)
+	{
+		loadPage(number);
+		bbox = pageBoundsDpi(number, dpi);
+	}
+	fz_catch(ctx)
+		wasm_rethrow(ctx);
+	return bbox.y1 - bbox.y0;
 }
 
 EMSCRIPTEN_KEEPALIVE
